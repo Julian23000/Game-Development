@@ -1,0 +1,73 @@
+using System;
+using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class JobsController : MonoBehaviour
+{
+    public GameObject GummyBear;
+    public GameObject Jobs;
+    public GameObject Options;
+    public GameObject JobFinished;
+    public Transform spawnLocation;
+    public bool jobActive = false;
+    public GameObject minimap;
+    private float disableAfterSeconds = 3f;
+  
+
+    //private GameObject spawnedGummibear;
+
+    public void StartGummibearJob()
+    {
+        if (jobActive) return;
+        jobActive = true;
+        Jobs.SetActive(false);
+        //spawnedGummibear = Instantiate(GummyBear, spawnLocation.position, Quaternion.identity);
+        Debug.Log("Job Started: Find the Gummibear!");
+    }
+
+    public void OnJobCompleted(int rewardCoins)
+    {
+        jobActive = false;
+        JobFinished.SetActive(true);
+        PlayerWallet.AddCoins(rewardCoins);
+        //if (spawnedGummibear != null)
+        //    Destroy(spawnedGummibear);
+            //rewardCoins = 10;
+        Time.timeScale = 0;
+
+        minimap.SetActive(false);
+
+        StartCoroutine(TurnOffJobDoneWithTimer());
+
+        Debug.Log("Job complete!");
+    }
+    private IEnumerator TurnOffJobDoneWithTimer()
+    {
+        yield return new WaitForSecondsRealtime(disableAfterSeconds);
+        JobFinished.SetActive(false);
+        Time.timeScale = 1;
+    }
+
+
+    public void CloseCompleteJobPanel()
+    {
+        JobFinished.SetActive(false);
+        Time.timeScale = 1;
+        minimap.SetActive(true);
+
+
+        Debug.Log("Button pressed");
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+        Time.timeScale = 0;
+        Debug.Log("Button pressed");
+    }
+
+
+}
