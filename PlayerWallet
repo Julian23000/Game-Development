@@ -1,0 +1,16 @@
+using JetBrains.Annotations;
+using System;
+using UnityEngine;
+
+public static class PlayerWallet
+{
+    public static int Coins { get; private set; }
+
+    public static event Action OnCoinsChanged;
+
+    public static void AddCoins(int amount)
+    {
+        Coins += amount;
+        OnCoinsChanged?.Invoke();
+    }
+}
