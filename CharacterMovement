@@ -1,0 +1,99 @@
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Switch;
+using UnityEngine.UIElements;
+
+public class CharacterMovement : MonoBehaviour
+{
+
+
+    [SerializeField] private float movementSpeed = 0;
+    private float minSpeed = 3f;
+    private float maxSpeed = 20f;
+    private float acceleration = 5f;
+    private float deceleration = 2f;
+
+    private LayerMask roundLayer;
+
+    public Vector2 turn;
+
+    public void LockMouse()
+    {
+        //This locks the cursor when left mouse button is clicked and releases ít when right button is clicked
+        if (Input.GetMouseButtonDown(0))
+        {
+            //Debug.Log("Left button down!, mouse should be locked");
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            //Debug.Log("Right button down!, mouse should be unlocked locked");
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+        }
+
+    }
+    public void SmoothMovement()
+    {
+        bool movingForward = Input.GetKey(KeyCode.W);
+        bool movingBackward = Input.GetKey(KeyCode.S);
+
+        bool isMoving = movingForward || movingBackward;
+
+        if (isMoving)
+        {
+        
+            //Speed grows after movement begins
+            movementSpeed += acceleration * Time.deltaTime;
+
+            //Limits speed in between the min-max
+            movementSpeed = Mathf.Clamp(movementSpeed, minSpeed, maxSpeed);
+        }
+        else
+        {
+            // Slowsdown back to min speed when there is no movement 
+
+                movementSpeed -= deceleration * Time.deltaTime;
+
+                    if (movementSpeed < minSpeed)
+                    {
+                        movementSpeed = 0f;
+                    }
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        LockMouse();
+        ////Turns character in x-axel when moving cursor
+        turn.x += Input.GetAxis("Mouse X");
+        transform.localRotation = Quaternion.Euler(0, turn.x, 0);
+
+
+
+        SmoothMovement();
+        // W A S D movement
+
+       /* if (Input.GetKey(KeyCode.D))
+        {
+            transform.Translate(Vector3.right * movementSpeed * Time.deltaTime);
+            //transform.Rotate(0, 0.3f, 0.0f);
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.Translate(Vector3.left * movementSpeed * Time.deltaTime);
+            //transform.Rotate(0, -0.3f, 0.0f);
+        }*/
+        if (Input.GetKey(KeyCode.W))
+        {
+            transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            transform.Translate(Vector3.back * movementSpeed * Time.deltaTime);
+        }
+    }
+    
+}
