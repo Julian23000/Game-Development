@@ -1,0 +1,23 @@
+using UnityEngine;
+
+public class GummyBear : MonoBehaviour
+{
+
+    public int rewardCoins = 10;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            JobsController jobsController = FindFirstObjectByType<JobsController>();
+            if (jobsController != null)
+            {
+                jobsController.OnJobCompleted(rewardCoins);
+            }
+            Destroy(gameObject);
+        }
+    }
+
+
+
+}
