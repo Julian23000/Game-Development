@@ -1,0 +1,73 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class PushingBehaviourAndUI : MonoBehaviour
+{
+    [Header("Pushing Settings")]
+    public float StartingPushStrength = 40f;
+    public float StrongestPush = 500f;
+    public float IncreasingPush = 20f;
+
+    [Header("RageBar UI")]
+    public Image RageBar;
+    public float RageIncreasePerHit = 0.2f; // Example: 5 hits = full bar
+
+    private float rageValue = 0f;
+
+    private Rigidbody Car;
+    private float pushForce;
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Car"))
+        {
+            Car = other.gameObject.GetComponent<Rigidbody>();
+
+            if (pushForce < StartingPushStrength)
+                pushForce = StartingPushStrength;
+
+            Debug.Log("Car was hit. Rage increased.");
+
+            IncreaseRageBar();
+        }
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
+        if (other.gameObject.CompareTag("Car") && Car != null)
+        {
+            pushForce += IncreasingPush * Time.deltaTime;
+            pushForce = Mathf.Clamp(pushForce, StartingPushStrength, StrongestPush);
+
+            Vector3 direction = (other.transform.position - transform.position).normalized;
+            direction.y = 0f;
+            Car.AddForce(direction * pushForce, ForceMode.Force);
+        }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("Car"))
+        {
+            Car = null;
+        }
+    }
+
+    private void IncreaseRageBar()
+    {
+        if (RageBar == null)
+            return;
+
+        rageValue += RageIncreasePerHit;
+        rageValue = Mathf.Clamp01(rageValue);
+
+        RageBar.fillAmount = rageValue;
+
+        if (rageValue >= 1f)
+        {
+            Debug.Log("Rage bar is full. Resetting...");
+            rageValue = 0f;
+            RageBar.fillAmount = 0f;
+        }
+    }
+}
