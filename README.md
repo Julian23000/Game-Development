@@ -5,3 +5,5 @@ Projects are distributed on branches
 
 # Other non Game-Development repositories
 
+https://github.com/Julian23000/game-guild-frontend
+https://github.com/nartkosova/game-guild-backend/tree/main
