@@ -10,7 +10,7 @@ public class PushingBehaviourAndUI : MonoBehaviour
 
     [Header("RageBar UI")]
     public Image RageBar;
-    public float RageIncreasePerHit = 0.2f; // Example: 5 hits = full bar
+    public float RageIncreasePerHit = 0.2f; // If hit 5 times, then bar is full
 
     private float rageValue = 0f;
 
